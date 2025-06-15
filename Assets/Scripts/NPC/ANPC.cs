@@ -6,19 +6,28 @@ using UnityEngine.SceneManagement;
 public abstract class ANPC : MonoBehaviour
 {
     [SerializeField]
-    public NPCData npcData;
+    public NPCData npcData = new NPCData();
     private GameContext gameContext;
     public bool isCreatedBySceneLoader = false;
+    public bool dontNeedSave = true;
 
     protected virtual void Awake()
     {
-        gameContext = GameManager.Instance.gameContext;
+        gameContext = DataManager.Instance.gameContext;
     }
 
     protected virtual void Start()
     {
+        if (dontNeedSave)
+        {
+            return;
+        }
         string curSceneName = SceneManager.GetActiveScene().name;
         // 해당 Scene 내용이 저장되어 있으면 saveData에서 상태 받아오기(전달 주체는 SceneLoader 지만 신경 쓸 필요 없음)
+        if (npcData == null)
+        {
+            npcData = new NPCData();
+        }
         if (gameContext.IsSceneSaved(curSceneName))
         {
             if (isCreatedBySceneLoader == false)
@@ -56,6 +65,10 @@ public abstract class ANPC : MonoBehaviour
     [ContextMenu("RemoveFromSceneBundle")]
     public void RemoveFromSceneBundle()
     {
+        if (gameContext == null)
+        {
+            return;
+        }
         gameContext.UnregisterNPC(this);
     }
 }

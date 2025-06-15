@@ -29,7 +29,7 @@ public class SceneLoader : MonoSingleton<SceneLoader>
         {
             abortSceneNames.Add(name);
         }
-        gameContext = GameManager.Instance.gameContext;
+        gameContext = DataManager.Instance.gameContext;
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -39,29 +39,41 @@ public class SceneLoader : MonoSingleton<SceneLoader>
         {
             return;
         }
+
         if (gameContext.IsSceneSaved(scene.name))
         {
-
-            SceneBundle saveData = gameContext.saveData.sceneBundles[scene.name];
-            while (gameContext.npcDataQueue.Count > 0)
+            if (!gameContext.saveData.sceneBundles.TryGetValue(scene.name, out var sceneBundle))
             {
-                NPCData npcData = gameContext.npcDataQueue.Dequeue();
-                GameObject prefab = Resources.Load<GameObject>(npcData.prefabPath);
-                if (prefab != null)
+                Logger.LogWarning($"SceneBundle not found for scene: {scene.name}");
+                return;
+            }
+
+            foreach (var kvp in sceneBundle.npcDataQueues)
+            {
+                Queue<NPCData> queue = kvp.Value;
+                while (queue.Count > 0)
                 {
-                    GameObject npc = GameObject.Instantiate(prefab);
-                    npc.transform.position = new Vector3(npcData.posX, npcData.posY, npcData.posZ);
-                    if(npc.TryGetComponent<ANPC>(out ANPC _npc))
+                    NPCData npcData = queue.Dequeue();
+
+                    GameObject prefab = Resources.Load<GameObject>(npcData.prefabPath);
+                    if (prefab != null)
                     {
-                        _npc.isCreatedBySceneLoader = true;
-                        _npc.npcData = npcData;
+                        GameObject npc = GameObject.Instantiate(prefab);
+                        npc.transform.position = new Vector3(npcData.posX, npcData.posY, npcData.posZ);
+
+                        if (npc.TryGetComponent<ANPC>(out ANPC _npc))
+                        {
+                            _npc.isCreatedBySceneLoader = true;
+                            _npc.npcData = npcData;
+                        }
                     }
-                }
-                else
-                {
-                    Logger.LogError($"Prefab not found at path: {npcData.prefabPath}");
+                    else
+                    {
+                        Logger.LogError($"Prefab not found at path: {npcData.prefabPath}");
+                    }
                 }
             }
         }
     }
+
 }

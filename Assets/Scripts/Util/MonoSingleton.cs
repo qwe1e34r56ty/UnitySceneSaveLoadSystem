@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 public class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>

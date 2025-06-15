@@ -7,7 +7,7 @@ using UnityEngine;
 public class NPCData
 {
     public string prefabPath;
-    public int hp;
+    public float hp;
     public float posX;
     public float posY;
     public float posZ;

@@ -10,7 +10,7 @@ public class LoadSaveSceneButton : MonoBehaviour
     private string defaultNextScene;
     private void Start()
     {
-        GameContext gameContext = GameManager.Instance.gameContext;
+        GameContext gameContext = DataManager.Instance.gameContext;
         if (gameObject.TryGetComponent<Button>(out Button button))
         {
             button.onClick.AddListener(() => SceneManager.LoadScene(gameContext.saveData.curSceneName ?? defaultNextScene));
