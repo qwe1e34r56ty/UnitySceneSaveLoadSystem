@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -24,7 +24,6 @@ public class SceneLoader : MonoSingleton<SceneLoader>
             return;
         }
         instance = this;
-        DontDestroyOnLoad(this.gameObject);
         foreach (string name in abortSceneNameList)
         {
             abortSceneNames.Add(name);

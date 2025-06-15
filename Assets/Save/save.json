@@ -1,0 +1,18 @@
+{
+  "difficultLevel": 0,
+  "curSceneName": "StartScene",
+  "KillCount": 0,
+  "achievements": {},
+  "playerData": null,
+  "sceneBundles": {
+    "StartScene": {
+      "playerStateInScene": {
+        "isPlayerExist": false,
+        "posX": 0.0,
+        "posY": 0.0,
+        "posZ": 0.0
+      },
+      "npcDataQueues": {}
+    }
+  }
+}

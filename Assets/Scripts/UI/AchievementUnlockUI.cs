@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
@@ -34,7 +34,6 @@ public class AchievementUnlockUI : MonoSingleton<AchievementUnlockUI>
         waitForMaintainTime = new WaitForSeconds(maintainTime);
         waitForWaitTime = new WaitForSeconds(waitTime); ;
         panel?.SetActive(false);
-        DontDestroyOnLoad(this);
     }
 
     public void Unlock(AchievementSO achievementSO)
