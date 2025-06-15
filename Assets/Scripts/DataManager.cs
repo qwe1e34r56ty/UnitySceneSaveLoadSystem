@@ -18,6 +18,7 @@ public class DataManager : MonoSingleton<DataManager>
     protected override void Awake()
     {
         base.Awake();
+        DontDestroyOnLoad(this.gameObject);
         gameContext = new GameContext(saveDataDir, defaultSaveDataPath, achivementSODir, achievementUnlockUI);
 
         foreach(string name in abortSceneNameList)

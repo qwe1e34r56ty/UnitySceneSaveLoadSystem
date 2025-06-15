@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: PentaKill
   m_EditorClassIdentifier: 
   achievementID: 1
-  achievementIcon: {fileID: 1686125799, guid: 8a7fba90466ced64c920c1d5d96ee3f0, type: 3}
+  achievementIcon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
   title: Penta Kill
   description: Kill 5 Enemy

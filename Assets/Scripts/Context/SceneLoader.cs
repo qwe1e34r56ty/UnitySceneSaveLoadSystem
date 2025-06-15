@@ -24,6 +24,7 @@ public class SceneLoader : MonoSingleton<SceneLoader>
             return;
         }
         instance = this;
+        DontDestroyOnLoad(this.gameObject);
         foreach (string name in abortSceneNameList)
         {
             abortSceneNames.Add(name);

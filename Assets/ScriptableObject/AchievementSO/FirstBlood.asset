@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: FirstBlood
   m_EditorClassIdentifier: 
   achievementID: 0
-  achievementIcon: {fileID: 21300000, guid: 5d3e21c128575894b91e2aa93df0d19a, type: 3}
+  achievementIcon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
   title: First Blood
   description: Kill 1 Enemy
