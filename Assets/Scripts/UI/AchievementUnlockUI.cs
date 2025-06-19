@@ -30,6 +30,7 @@ public class AchievementUnlockUI : MonoSingleton<AchievementUnlockUI>
     protected override void Awake()
     {
         base.Awake();
+        DontDestroyOnLoad(gameObject);
         waitBufferTimeSecond = new WaitForSeconds(bufferTime);
         waitForMaintainTime = new WaitForSeconds(maintainTime);
         waitForWaitTime = new WaitForSeconds(waitTime); ;

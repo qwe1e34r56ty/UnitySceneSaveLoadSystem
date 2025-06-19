@@ -18,7 +18,7 @@ public class DataManager : MonoSingleton<DataManager>
     protected override void Awake()
     {
         base.Awake();
-        DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(gameObject);
         gameContext = new GameContext(saveDataDir, defaultSaveDataPath, achivementSODir, achievementUnlockUI);
 
         foreach(string name in abortSceneNameList)
@@ -31,19 +31,21 @@ public class DataManager : MonoSingleton<DataManager>
 
     protected override void OnDestroy()
     {
-        if (!abortSceneNames.Contains(SceneManager.GetActiveScene().name))
+        if (abortSceneNames.Contains(SceneManager.GetActiveScene().name))
         {
-            gameContext.SaveCurrentScene();
+            return;
         }
+        gameContext.SaveCurrentScene();
         gameContext.Save();
     }
 
     protected override void OnApplicationQuit()
     {
-        if (!abortSceneNames.Contains(SceneManager.GetActiveScene().name))
+        if (abortSceneNames.Contains(SceneManager.GetActiveScene().name))
         {
-            gameContext.SaveCurrentScene();
+            return;
         }
+        gameContext.SaveCurrentScene();
         gameContext.Save();
     }
 
@@ -53,7 +55,6 @@ public class DataManager : MonoSingleton<DataManager>
         {
             return;
         }
-        gameContext.ClearBeforeLoad();
         gameContext.SetCurrentScene(scene.name);
         gameContext.LoadCurrentSceneData();
     }
@@ -65,6 +66,9 @@ public class DataManager : MonoSingleton<DataManager>
             return;
         }
         gameContext.SaveCurrentScene();
+        gameContext.Save();
+        gameContext.ClearBeforeLoad();
+        gameContext.dontSaveCurSceneBundle = false;
     }
 
     [ContextMenu("ClearCurSceneBundle")]
@@ -83,14 +87,14 @@ public class DataManager : MonoSingleton<DataManager>
     [ContextMenu("AddKillCountHundred")]
     public void AddKillCountHundred()
     {
-        gameContext.addKillCount(100);
+        gameContext.AddKillCount(100);
     }
 
     [Conditional("UNITY_EDITOR")]
     [ContextMenu("SubKillCountHundred")]
     public void SubKillCountHundred()
     {
-        gameContext.addKillCount(-100);
+        gameContext.AddKillCount(-100);
     }
 
     [Conditional("UNITY_EDITOR")]
@@ -98,5 +102,12 @@ public class DataManager : MonoSingleton<DataManager>
     public void ResetSave()
     {
         gameContext.ResetSave();
+    }
+
+    [Conditional("UNITY_EDITOR")]
+    [ContextMenu("ResetSave")]
+    public void ClearBeforeLoad()
+    {
+        gameContext.ClearBeforeLoad();
     }
 }

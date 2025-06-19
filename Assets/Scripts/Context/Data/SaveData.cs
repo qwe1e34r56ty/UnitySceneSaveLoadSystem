@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +6,7 @@ using UnityEngine;
 [Serializable]
 public class SceneBundle
 {
-    public PlayerStateInScene playerStateInScene;
+    public PlayerStateInScene playerStateInScene = new PlayerStateInScene();
     public Dictionary<string, Queue<NPCData>> npcDataQueues = new Dictionary<string, Queue<NPCData>>();
 }
 
@@ -17,7 +17,8 @@ public class SaveData
     public string curSceneName;
     public int KillCount = 0;
     public Dictionary<AchievementID, AchievementData> achievements = new Dictionary<AchievementID, AchievementData>();
-    public PlayerData playerData = new();
+    public PlayerData playerData = null;
+    public DungeonData dungeonData = new DungeonData();
     public Dictionary<string, SceneBundle> sceneBundles = new Dictionary<string, SceneBundle>();
 }
 

@@ -16,16 +16,26 @@ public class GameContext
     private Dictionary<AchievementID, AchievementSO> achievementSOs = 
         new Dictionary<AchievementID, AchievementSO>();
 
-    public string currentSceneName = null;
-    public APlayer player = null;
-    public PlayerData playerData = null;
-    public PlayerStateInScene playerStateInScene = new PlayerStateInScene();
-    public Dictionary<string, Queue<NPCData>> npcDataQueues = new Dictionary<string, Queue<NPCData>>();
-    public Dictionary<ANPC, NPCData> npcDatas = new Dictionary<ANPC, NPCData>();
+    #region Save Option
     public bool dontSaveCurSceneBundle = false;
+    #endregion  
+
+    #region Object In Scene
+    public APlayer player = null;
+    public HashSet<ANPC> npcs = new HashSet<ANPC>();
+    #endregion
+
+    #region Temp Scene Data
+    public PlayerStateInScene playerStateInScene = new PlayerStateInScene();
+    public Dictionary<ANPC, NPCData> npcDatas = new Dictionary<ANPC, NPCData>();
+    #endregion
+
+    #region Temp Floor Data
+    public PlayerStateInFloor playerStateInFloor = new PlayerStateInFloor();
+    #endregion
+
 
     #region API
-    // 난이도 선택 옵션
     public void SelectDifficultLevel(DifficultLevel difficultLevel)
     {
         saveData.difficultLevel = difficultLevel;
@@ -36,7 +46,7 @@ public class GameContext
         return saveData.difficultLevel;
     }
 
-    public void addKillCount(int count)
+    public void AddKillCount(int count)
     {
         int tmp = saveData.KillCount;
         saveData.KillCount += count;
@@ -52,7 +62,7 @@ public class GameContext
 
     public void ClearCurSceneBundle()
     {
-        saveData.sceneBundles.Remove(currentSceneName);
+        saveData.sceneBundles.Remove(saveData.curSceneName);
     }
 
     public void DontSaveCurSceneBundle()
@@ -60,7 +70,6 @@ public class GameContext
         dontSaveCurSceneBundle = true;
     }
 
-    // 업적 언락
     public void Unlock(AchievementID achievementID)
     {
         AchievementData achievementData;
@@ -110,6 +119,16 @@ public class GameContext
         }
     }
 
+    public void RegisterNPC(ANPC anpc, NPCData data)
+    {
+        npcDatas[anpc] = data;
+    }
+
+    public void UnregisterNPC(ANPC anpc)
+    {
+        npcDatas.Remove(anpc);
+    }
+
     private void InitializeAchievements()
     {
         AchievementSO[] loadedSOs = Resources.LoadAll<AchievementSO>(achievementSODir);
@@ -117,17 +136,6 @@ public class GameContext
         {
             achievementSOs[loadedSOs[i].achievementID] = loadedSOs[i];
         }
-    }
-
-    public void RegisterNPC(ANPC anpc, NPCData data)
-    {
-        npcDatas[anpc] = data;
-        
-    }
-
-    public void UnregisterNPC(ANPC anpc)
-    {
-        npcDatas.Remove(anpc);
     }
 
     public void Load()
@@ -156,15 +164,25 @@ public class GameContext
 
     public void ClearBeforeLoad()
     {
-        npcDataQueues.Clear();
+        if (player != null)
+        {
+            GameObject.Destroy(player.gameObject);
+        }
+        foreach (ANPC anpc in npcDatas.Keys)
+        {
+            if (anpc != null)
+            {
+                GameObject.Destroy(anpc.gameObject);
+            }
+        }
         npcDatas.Clear();
     }
-
     public void SetCurrentScene(string sceneName)
     {
-        currentSceneName = sceneName;
+        saveData.curSceneName = sceneName;
     }
 
+    #region Scene Data Manipulation Method
     public void SaveCurrentScene()
     {
         if (player != null)
@@ -195,32 +213,25 @@ public class GameContext
                 playerStateInScene = playerStateInScene,
                 npcDataQueues = tempNPCDataQueues
             };
-            if (saveData.sceneBundles.ContainsKey(currentSceneName))
+            if (saveData.sceneBundles.ContainsKey(saveData.curSceneName))
             {
-                saveData.sceneBundles[currentSceneName] = bundle;
+                saveData.sceneBundles[saveData.curSceneName] = bundle;
             }
             else
             {
-                saveData.sceneBundles.Add(currentSceneName, bundle);
+                saveData.sceneBundles.Add(saveData.curSceneName, bundle);
             }
         }
-        else
-        {
-            dontSaveCurSceneBundle = false;
-        }
-        saveData.curSceneName = currentSceneName;
-        saveData.playerData = playerData;
     }
 
     public void LoadCurrentSceneData()
     {
-        string sceneName = currentSceneName;
+        string sceneName = saveData.curSceneName;
 
         if (saveData.sceneBundles.TryGetValue(sceneName, out var bundle))
         {
             playerStateInScene = bundle.playerStateInScene ?? new PlayerStateInScene();
             npcDatas.Clear();
-            npcDataQueues = new Dictionary<string, Queue<NPCData>>(bundle.npcDataQueues);
 
             Logger.Log($"[GameContext] Loaded existing SceneBundle for: {sceneName}");
         }
@@ -241,4 +252,58 @@ public class GameContext
             return false;
         }
     }
+    #endregion
+
+    #region Floor Data Manipulation Method
+    public void SaveCurrentFloor()
+    {
+        if (player != null)
+        {
+            player.Save();
+        }
+        foreach (ANPC aNPC in npcDatas.Keys)
+        {
+            if (aNPC != null)
+            {
+                aNPC.Save();
+            }
+        }
+        int curFloorIndex = saveData.dungeonData.playerStateInDungeon.curFloorIndex;
+
+        while (saveData.dungeonData.floorDataList.Count <= curFloorIndex)
+        {
+            saveData.dungeonData.floorDataList.Add(new FloorData());
+        }
+
+        Dictionary<string, Queue<NPCData>> floorNPCQueues = new();
+        foreach (KeyValuePair<ANPC, NPCData> pair in npcDatas)
+        {
+            string prefabPath = pair.Value.prefabPath;
+            if (!floorNPCQueues.ContainsKey(prefabPath))
+            {
+                floorNPCQueues[prefabPath] = new Queue<NPCData>();
+            }
+            floorNPCQueues[prefabPath].Enqueue(pair.Value);
+        }
+
+        saveData.dungeonData.floorDataList[curFloorIndex].npcDataQueues = floorNPCQueues;
+        saveData.dungeonData.floorDataList[curFloorIndex].playerStateInFloor = playerStateInFloor;
+    }
+
+    public void LoadCurrentFloorData()
+    {
+        int curFloorIndex = saveData.dungeonData.playerStateInDungeon.curFloorIndex;
+        if (saveData.dungeonData.floorDataList.Count > curFloorIndex)
+        {
+            playerStateInFloor = saveData.dungeonData.floorDataList[curFloorIndex].playerStateInFloor ?? new PlayerStateInFloor();
+            npcDatas.Clear();
+
+            Logger.Log($"[GameContext] Loaded existing PlayerStateInFloor for: Floor {curFloorIndex}");
+        }
+        else
+        {
+            Logger.Log($"[GameContext] No saved PlayerStateInFloor found for: Floor {curFloorIndex}, initialized empty runtime state.");
+        }
+    }
+    #endregion
 }

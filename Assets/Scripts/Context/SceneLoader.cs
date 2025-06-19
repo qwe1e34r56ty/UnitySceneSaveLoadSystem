@@ -7,24 +7,17 @@ using UnityEngine.SceneManagement;
 public class SceneLoader : MonoSingleton<SceneLoader>
 {
     GameContext gameContext;
-    private static SceneLoader instance;
     [SerializeField] private List<string> abortSceneNameList = new();
     private HashSet<string> abortSceneNames = new();
 
     protected override void Awake()
     {
         base.Awake();
+        DontDestroyOnLoad(gameObject);
     }
 
     protected void Start()
     {
-        if (instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        instance = this;
-        DontDestroyOnLoad(this.gameObject);
         foreach (string name in abortSceneNameList)
         {
             abortSceneNames.Add(name);

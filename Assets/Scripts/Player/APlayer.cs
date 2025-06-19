@@ -11,7 +11,7 @@ public abstract class APlayer : MonoBehaviour
     private GameContext gameContext;
     public bool dontNeedSave = true;
 
-    protected virtual void Awake()
+    protected virtual void Start()
     {
         if (dontNeedSave)
         {
@@ -21,9 +21,17 @@ public abstract class APlayer : MonoBehaviour
         gameContext.player = this;
         string curSceneName = SceneManager.GetActiveScene().name;
         // 해당 Scene 내용이 저장되어 있으면 saveData에서 상태 받아오기
+        if (gameContext.saveData.playerData == null)
+        {
+            gameContext.saveData.playerData = playerData;
+            Debug.Log("Asddfsd");
+        }
+        else
+        {
+            playerData = gameContext.saveData.playerData;
+        }
         if (gameContext.IsSceneSaved(curSceneName))
         {
-            this.playerData = gameContext.saveData.playerData;
             this.playerStateInScene = gameContext.saveData.sceneBundles[curSceneName].playerStateInScene;
 
             // 받아온 상태 처리
@@ -43,14 +51,10 @@ public abstract class APlayer : MonoBehaviour
         // 아니면 새로 생성하기
         else
         {
-            if (gameContext.playerData == null)
-            {
-                gameContext.playerData = playerData;
-            }
             playerStateInScene = new();
+            playerStateInScene.isPlayerExist = true;
+            gameContext.playerStateInScene = playerStateInScene;
         }
-        playerStateInScene.isPlayerExist = true;
-        gameContext.playerStateInScene = playerStateInScene;
     }
 
     // Update에서 호출하지 말고 Save 지점에서만 호출할 방법 고민?
