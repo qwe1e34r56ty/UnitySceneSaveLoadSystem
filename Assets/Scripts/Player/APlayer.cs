@@ -32,7 +32,7 @@ public abstract class APlayer : MonoBehaviour
         }
         if (gameContext.IsSceneSaved(curSceneName))
         {
-            this.playerStateInScene = gameContext.saveData.sceneBundles[curSceneName].playerStateInScene;
+            this.playerStateInScene = gameContext.saveData.sceneDatas[curSceneName].playerStateInScene;
 
             // 받아온 상태 처리
             gameObject.transform.position = new Vector3(playerStateInScene.posX, playerStateInScene.posY, playerStateInScene.posZ);

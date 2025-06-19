@@ -40,13 +40,32 @@
           ]
         },
         "playerStateInFloor": {
-          "posX": 2.43,
+          "posX": -5.83,
           "posY": 0.0,
           "posZ": 0.0
         }
       },
       {
-        "npcDataQueues": {},
+        "npcDataQueues": {
+          "Prefabs/NPC/NPC2": [
+            {
+              "prefabPath": "Prefabs/NPC/NPC2",
+              "hp": 0.0,
+              "posX": 2.1,
+              "posY": 2.06,
+              "posZ": 0.0
+            }
+          ],
+          "Prefabs/NPC/NPC1": [
+            {
+              "prefabPath": "Prefabs/NPC/NPC1",
+              "hp": 0.0,
+              "posX": 2.72,
+              "posY": 0.0,
+              "posZ": 0.0
+            }
+          ]
+        },
         "tileDataQueues": {},
         "playerStateInFloor": {
           "posX": 0.0,

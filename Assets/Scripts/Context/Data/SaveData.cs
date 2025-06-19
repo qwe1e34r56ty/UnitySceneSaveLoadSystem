@@ -4,14 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class SceneBundle
-{
-    public PlayerStateInScene playerStateInScene = new PlayerStateInScene();
-    public Dictionary<string, Queue<NPCData>> npcDataQueues = new Dictionary<string, Queue<NPCData>>();
-    public Dictionary<string, Queue<TileData>> tileDataQueues = new Dictionary<string, Queue<TileData>>();
-}
-
-[Serializable]
 public class SaveData
 {
     public DifficultLevel difficultLevel = DifficultLevel.Easy;
@@ -20,7 +12,7 @@ public class SaveData
     public Dictionary<AchievementID, AchievementData> achievements = new Dictionary<AchievementID, AchievementData>();
     public PlayerData playerData = null;
     public DungeonData dungeonData = new DungeonData();
-    public Dictionary<string, SceneBundle> sceneBundles = new Dictionary<string, SceneBundle>();
+    public Dictionary<string, SceneData> sceneDatas = new Dictionary<string, SceneData>();
 }
 
 public enum DifficultLevel

@@ -35,7 +35,7 @@ public class SceneLoader : MonoSingleton<SceneLoader>
 
         if (gameContext.IsSceneSaved(scene.name))
         {
-            if (!gameContext.saveData.sceneBundles.TryGetValue(scene.name, out var sceneBundle))
+            if (!gameContext.saveData.sceneDatas.TryGetValue(scene.name, out var sceneBundle))
             {
                 Logger.LogWarning($"SceneBundle not found for scene: {scene.name}");
                 return;

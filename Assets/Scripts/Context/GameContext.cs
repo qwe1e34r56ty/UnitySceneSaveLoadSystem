@@ -64,7 +64,7 @@ public class GameContext
 
     public void ClearCurSceneBundle()
     {
-        saveData.sceneBundles.Remove(saveData.curSceneName);
+        saveData.sceneDatas.Remove(saveData.curSceneName);
     }
 
     public void DontSaveCurSceneBundle()
@@ -246,19 +246,19 @@ public class GameContext
                 }
                 tileDataQueues[prefabPath].Enqueue(pair.Value);
             }
-            var bundle = new SceneBundle
+            var bundle = new SceneData
             {
                 playerStateInScene = playerStateInScene,
                 npcDataQueues = npcDataQueues,
                 tileDataQueues = tileDataQueues
             };
-            if (saveData.sceneBundles.ContainsKey(saveData.curSceneName))
+            if (saveData.sceneDatas.ContainsKey(saveData.curSceneName))
             {
-                saveData.sceneBundles[saveData.curSceneName] = bundle;
+                saveData.sceneDatas[saveData.curSceneName] = bundle;
             }
             else
             {
-                saveData.sceneBundles.Add(saveData.curSceneName, bundle);
+                saveData.sceneDatas.Add(saveData.curSceneName, bundle);
             }
         }
     }
@@ -267,7 +267,7 @@ public class GameContext
     {
         string sceneName = saveData.curSceneName;
 
-        if (saveData.sceneBundles.TryGetValue(sceneName, out var bundle))
+        if (saveData.sceneDatas.TryGetValue(sceneName, out var bundle))
         {
             playerStateInScene = bundle.playerStateInScene ?? new PlayerStateInScene();
             npcDatas.Clear();
@@ -282,7 +282,7 @@ public class GameContext
 
     public bool IsSceneSaved(string sceneName)
     {
-        if (saveData.sceneBundles.ContainsKey(sceneName))
+        if (saveData.sceneDatas.ContainsKey(sceneName))
         {
             return true;
         }
