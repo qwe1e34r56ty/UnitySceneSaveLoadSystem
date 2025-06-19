@@ -25,7 +25,7 @@
 ### ✅ Scene + Floor 데이터 분리
 - `SceneData`는 일반적인 씬 진입 시 저장되는 데이터 (맵 구조, 캐릭터 위치 등)
 - `FloorData`는 던전의 각 층별 저장용도로 분리 관리
-- `DontSaveCurSceneBundle()`을 통해 현재 씬 저장 생략 가능 (던전 전용)
+- `DontSaveCurSceneBundle()`을 통해 현재 씬 저장 생략 가능 (던전 또는 일반 scene 내 런타임 작업 용도)
 
 ### ✅ Achievement 시스템
 - 업적(`AchievementID`) 달성 시 `AchievementSO` ScriptableObject를 기반으로 UnlockUI 출력
