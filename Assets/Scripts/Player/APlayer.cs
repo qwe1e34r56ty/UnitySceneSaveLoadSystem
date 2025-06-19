@@ -5,15 +5,16 @@ using UnityEngine.SceneManagement;
 public abstract class APlayer : MonoBehaviour
 {
     [SerializeField]
-    protected PlayerData playerData = new PlayerData();
-    public PlayerData PlayerData => playerData;
-    protected PlayerStateInScene playerStateInScene;
+    public PlayerData playerData = new PlayerData();
+    public PlayerStateInScene playerStateInScene;
+    public PlayerStateInFloor playerStateInFloor;
     private GameContext gameContext;
-    public bool dontNeedSave = true;
+    public bool isDontNeedSave = false;
+    public bool isCreatedInFloorLoader = false;
 
     protected virtual void Start()
     {
-        if (dontNeedSave)
+        if (isDontNeedSave)
         {
             return;
         }
@@ -24,7 +25,6 @@ public abstract class APlayer : MonoBehaviour
         if (gameContext.saveData.playerData == null)
         {
             gameContext.saveData.playerData = playerData;
-            Debug.Log("Asddfsd");
         }
         else
         {
@@ -36,43 +36,54 @@ public abstract class APlayer : MonoBehaviour
 
             // 받아온 상태 처리
             gameObject.transform.position = new Vector3(playerStateInScene.posX, playerStateInScene.posY, playerStateInScene.posZ);
-            /*
-             * 
-             * 
-             * 
-             * 
-             */
 
             if (playerStateInScene.isPlayerExist == false)
             {
                 Destroy(gameObject);
             }
         }
+        else if (isCreatedInFloorLoader)
+        {
+            gameContext.playerStateInScene = playerStateInScene;
+        }
         // 아니면 새로 생성하기
         else
         {
+            playerStateInFloor = new();
             playerStateInScene = new();
             playerStateInScene.isPlayerExist = true;
             gameContext.playerStateInScene = playerStateInScene;
         }
+        gameContext.playerStateInFloor = playerStateInFloor;
     }
 
-    // Update에서 호출하지 말고 Save 지점에서만 호출할 방법 고민?
     public virtual void Save()
     {
         if (playerStateInScene == null)
         {
             return;
         }
-        playerStateInScene.posX = gameObject.transform.position.x;
-        playerStateInScene.posY = gameObject.transform.position.y;
-        playerStateInScene.posZ = gameObject.transform.position.z;
+        if (isCreatedInFloorLoader)
+        {
+            playerStateInFloor.posX = gameObject.transform.position.x;
+            playerStateInFloor.posY = gameObject.transform.position.y;
+            playerStateInFloor.posZ = gameObject.transform.position.z;
+        }
+        else
+        {
+            playerStateInScene.posX = gameObject.transform.position.x;
+            playerStateInScene.posY = gameObject.transform.position.y;
+            playerStateInScene.posZ = gameObject.transform.position.z;
+        }
     }
 
     protected virtual void OnDestroy()
     {
-        Save();
-        if (gameContext != null)
+        if (gameContext.player == this)
+        {
+            Save();
+        }
+        if (gameContext != null && gameContext.player != null && gameContext.player == this)
         {
             gameContext.player = null;
         }

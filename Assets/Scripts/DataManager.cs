@@ -83,6 +83,18 @@ public class DataManager : MonoSingleton<DataManager>
         gameContext.DontSaveCurSceneBundle();
     }
 
+    [ContextMenu("ResetSave")]
+    public void ResetSave()
+    {
+        gameContext.ResetSave();
+    }
+
+    [ContextMenu("ResetSave")]
+    public void ClearBeforeLoad()
+    {
+        gameContext.ClearBeforeLoad();
+    }
+
     [Conditional("UNITY_EDITOR")]
     [ContextMenu("AddKillCountHundred")]
     public void AddKillCountHundred()
@@ -95,19 +107,5 @@ public class DataManager : MonoSingleton<DataManager>
     public void SubKillCountHundred()
     {
         gameContext.AddKillCount(-100);
-    }
-
-    [Conditional("UNITY_EDITOR")]
-    [ContextMenu("ResetSave")]
-    public void ResetSave()
-    {
-        gameContext.ResetSave();
-    }
-
-    [Conditional("UNITY_EDITOR")]
-    [ContextMenu("ResetSave")]
-    public void ClearBeforeLoad()
-    {
-        gameContext.ClearBeforeLoad();
     }
 }

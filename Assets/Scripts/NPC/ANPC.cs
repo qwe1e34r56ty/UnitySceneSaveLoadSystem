@@ -9,7 +9,7 @@ public abstract class ANPC : MonoBehaviour
     public NPCData npcData = new NPCData();
     private GameContext gameContext;
     public bool isCreatedBySceneLoader = false;
-    public bool dontNeedSave = true;
+    public bool isDontNeedSave = false;
 
     protected virtual void Awake()
     {
@@ -18,7 +18,7 @@ public abstract class ANPC : MonoBehaviour
 
     protected virtual void Start()
     {
-        if (dontNeedSave)
+        if (isDontNeedSave)
         {
             return;
         }
@@ -55,8 +55,8 @@ public abstract class ANPC : MonoBehaviour
         Save();
     }
 
-    [ContextMenu("RemoveFromSceneBundle")]
-    public void RemoveFromSceneBundle()
+    [ContextMenu("RemoveFromSave")]
+    public void RemoveFromSave()
     {
         if (gameContext == null)
         {

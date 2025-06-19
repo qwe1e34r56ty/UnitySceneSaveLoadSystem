@@ -549,7 +549,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 387b63d02ba980a4ebbe59c5d3beccba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultNextScene: SceneA
+  defaultNextScene: DungeonEnterScene
 --- !u!114 &1751228441
 MonoBehaviour:
   m_ObjectHideFlags: 0
