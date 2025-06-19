@@ -1,6 +1,6 @@
 {
   "difficultLevel": 0,
-  "curSceneName": "DungeonScene",
+  "curSceneName": "DungeonEnterScene",
   "KillCount": 0,
   "achievements": {},
   "playerData": {
@@ -30,6 +30,7 @@
             }
           ]
         },
+        "tileDataQueues": {},
         "playerStateInFloor": {
           "posX": 0.0,
           "posY": 0.0,
@@ -38,6 +39,7 @@
       },
       {
         "npcDataQueues": {},
+        "tileDataQueues": {},
         "playerStateInFloor": {
           "posX": 0.0,
           "posY": 0.0,
@@ -56,6 +58,16 @@
             }
           ]
         },
+        "tileDataQueues": {
+          "Prefabs/Tile/Tile": [
+            {
+              "prefabPath": "Prefabs/Tile/Tile",
+              "posX": 0.0,
+              "posY": 0.0,
+              "posZ": 0.0
+            }
+          ]
+        },
         "playerStateInFloor": {
           "posX": 0.0,
           "posY": 0.0,
@@ -64,6 +76,22 @@
       },
       {
         "npcDataQueues": {},
+        "tileDataQueues": {
+          "Prefabs/Tile/Tile": [
+            {
+              "prefabPath": "Prefabs/Tile/Tile",
+              "posX": 0.0,
+              "posY": 0.0,
+              "posZ": 0.0
+            },
+            {
+              "prefabPath": "Prefabs/Tile/Tile",
+              "posX": 3.0,
+              "posY": 0.0,
+              "posZ": 0.0
+            }
+          ]
+        },
         "playerStateInFloor": {
           "posX": 0.0,
           "posY": 0.0,
@@ -91,6 +119,16 @@
             }
           ]
         },
+        "tileDataQueues": {
+          "Prefabs/Tile/Tile": [
+            {
+              "prefabPath": "Prefabs/Tile/Tile",
+              "posX": 0.0,
+              "posY": 5.0,
+              "posZ": 0.0
+            }
+          ]
+        },
         "playerStateInFloor": {
           "posX": 0.0,
           "posY": 0.0,
@@ -99,6 +137,7 @@
       },
       {
         "npcDataQueues": {},
+        "tileDataQueues": {},
         "playerStateInFloor": {
           "posX": 0.0,
           "posY": 0.0,
@@ -107,7 +146,7 @@
       }
     ],
     "playerStateInDungeon": {
-      "curFloorIndex": 0
+      "curFloorIndex": 5
     }
   },
   "sceneBundles": {
@@ -137,7 +176,8 @@
             "posZ": 0.0
           }
         ]
-      }
+      },
+      "tileDataQueues": {}
     },
     "SceneC": {
       "playerStateInScene": {
@@ -165,7 +205,66 @@
             "posZ": 0.0
           }
         ]
-      }
+      },
+      "tileDataQueues": {}
+    },
+    "DungeonEnterScene": {
+      "playerStateInScene": {
+        "isPlayerExist": true,
+        "posX": 0.0,
+        "posY": 0.0,
+        "posZ": 0.0
+      },
+      "npcDataQueues": {
+        "Prefabs/NPC/NPC1": [
+          {
+            "prefabPath": "Prefabs/NPC/NPC1",
+            "hp": 0.0,
+            "posX": -5.24,
+            "posY": 0.0,
+            "posZ": 0.0
+          }
+        ],
+        "Prefabs/NPC/NPC2": [
+          {
+            "prefabPath": "Prefabs/NPC/NPC2",
+            "hp": 0.0,
+            "posX": 3.71,
+            "posY": 0.0,
+            "posZ": 0.0
+          }
+        ]
+      },
+      "tileDataQueues": {}
+    },
+    "DungeonClearScene": {
+      "playerStateInScene": {
+        "isPlayerExist": true,
+        "posX": 0.0,
+        "posY": 0.0,
+        "posZ": 0.0
+      },
+      "npcDataQueues": {
+        "Prefabs/NPC/NPC1": [
+          {
+            "prefabPath": "Prefabs/NPC/NPC1",
+            "hp": 0.0,
+            "posX": 0.0,
+            "posY": 2.73,
+            "posZ": 0.0
+          }
+        ],
+        "Prefabs/NPC/NPC2": [
+          {
+            "prefabPath": "Prefabs/NPC/NPC2",
+            "hp": 0.0,
+            "posX": 3.28,
+            "posY": 0.0,
+            "posZ": 0.0
+          }
+        ]
+      },
+      "tileDataQueues": {}
     }
   }
 }

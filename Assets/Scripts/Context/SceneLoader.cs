@@ -66,6 +66,30 @@ public class SceneLoader : MonoSingleton<SceneLoader>
                     }
                 }
             }
+            foreach (var kvp in sceneBundle.tileDataQueues)
+            {
+                Queue<TileData> queue = kvp.Value;
+                while (queue.Count > 0)
+                {
+                    TileData tileData = queue.Dequeue();
+
+                    GameObject prefab = Resources.Load<GameObject>(tileData.prefabPath);
+                    if (prefab != null)
+                    {
+                        GameObject tile = GameObject.Instantiate(prefab);
+                        tile.transform.position = new Vector3(tileData.posX, tileData.posY, tileData.posZ);
+
+                        if (tile.TryGetComponent<ATile>(out ATile _tile))
+                        {
+                            _tile.tileData = tileData;
+                        }
+                    }
+                    else
+                    {
+                        Logger.LogError($"Prefab not found at path: {tileData.prefabPath}");
+                    }
+                }
+            }
         }
     }
 

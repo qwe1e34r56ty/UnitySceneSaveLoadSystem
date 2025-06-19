@@ -23,11 +23,13 @@ public class GameContext
     #region Object In Scene
     public APlayer player = null;
     public HashSet<ANPC> npcs = new HashSet<ANPC>();
+    public HashSet<ATile> tiles = new HashSet<ATile>();
     #endregion
 
     #region Temp Scene Data
     public PlayerStateInScene playerStateInScene = new PlayerStateInScene();
     public Dictionary<ANPC, NPCData> npcDatas = new Dictionary<ANPC, NPCData>();
+    public Dictionary<ATile, TileData> tileDatas = new Dictionary<ATile, TileData>();
     #endregion
 
     #region Temp Floor Data
@@ -129,6 +131,17 @@ public class GameContext
         npcDatas.Remove(anpc);
     }
 
+    public void RegisterTile(ATile atile, TileData data)
+    {
+        tileDatas[atile] = data;
+    }
+
+    public void UnregisterTile(ATile atile)
+    {
+        tileDatas.Remove(atile);
+    }
+
+
     private void InitializeAchievements()
     {
         AchievementSO[] loadedSOs = Resources.LoadAll<AchievementSO>(achievementSODir);
@@ -168,14 +181,22 @@ public class GameContext
         {
             GameObject.Destroy(player.gameObject);
         }
-        foreach (ANPC anpc in npcDatas.Keys)
+        foreach (ANPC aNPC in npcDatas.Keys)
         {
-            if (anpc != null)
+            if (aNPC != null)
             {
-                GameObject.Destroy(anpc.gameObject);
+                GameObject.Destroy(aNPC.gameObject);
+            }
+        }
+        foreach (ATile aTile in tileDatas.Keys)
+        {
+            if (aTile != null)
+            {
+                GameObject.Destroy(aTile.gameObject);
             }
         }
         npcDatas.Clear();
+        tileDatas.Clear();
     }
     public void SetCurrentScene(string sceneName)
     {
@@ -196,22 +217,40 @@ public class GameContext
                 aNPC.Save();
             }
         }
+        foreach (ATile aTile in tileDatas.Keys)
+        {
+            if (aTile != null)
+            {
+                aTile.Save();
+            }
+        }
         if (!dontSaveCurSceneBundle)
         {
-            Dictionary<string, Queue<NPCData>> tempNPCDataQueues = new Dictionary<string, Queue<NPCData>>();
+            Dictionary<string, Queue<NPCData>> npcDataQueues = new Dictionary<string, Queue<NPCData>>();
             foreach(KeyValuePair<ANPC, NPCData> pair in npcDatas)
             {
                 string prefabPath = pair.Value.prefabPath;
-                if (!tempNPCDataQueues.ContainsKey(prefabPath))
+                if (!npcDataQueues.ContainsKey(prefabPath))
                 {
-                    tempNPCDataQueues.Add(prefabPath, new Queue<NPCData>());
+                    npcDataQueues.Add(prefabPath, new Queue<NPCData>());
                 }
-                tempNPCDataQueues[prefabPath].Enqueue(pair.Value);
+                npcDataQueues[prefabPath].Enqueue(pair.Value);
+            }
+            Dictionary<string, Queue<TileData>> tileDataQueues = new Dictionary<string, Queue<TileData>>();
+            foreach (KeyValuePair<ATile, TileData> pair in tileDatas)
+            {
+                string prefabPath = pair.Value.prefabPath;
+                if (!tileDataQueues.ContainsKey(prefabPath))
+                {
+                    tileDataQueues.Add(prefabPath, new Queue<TileData>());
+                }
+                tileDataQueues[prefabPath].Enqueue(pair.Value);
             }
             var bundle = new SceneBundle
             {
                 playerStateInScene = playerStateInScene,
-                npcDataQueues = tempNPCDataQueues
+                npcDataQueues = npcDataQueues,
+                tileDataQueues = tileDataQueues
             };
             if (saveData.sceneBundles.ContainsKey(saveData.curSceneName))
             {
@@ -268,6 +307,13 @@ public class GameContext
                 aNPC.Save();
             }
         }
+        foreach (ATile aTile in tileDatas.Keys)
+        {
+            if (aTile != null)
+            {
+                aTile.Save();
+            }
+        }
         int curFloorIndex = saveData.dungeonData.playerStateInDungeon.curFloorIndex;
 
         while (saveData.dungeonData.floorDataList.Count <= curFloorIndex)
@@ -275,18 +321,29 @@ public class GameContext
             saveData.dungeonData.floorDataList.Add(new FloorData());
         }
 
-        Dictionary<string, Queue<NPCData>> floorNPCQueues = new();
+        Dictionary<string, Queue<NPCData>> npcDataQueues = new();
         foreach (KeyValuePair<ANPC, NPCData> pair in npcDatas)
         {
             string prefabPath = pair.Value.prefabPath;
-            if (!floorNPCQueues.ContainsKey(prefabPath))
+            if (!npcDataQueues.ContainsKey(prefabPath))
             {
-                floorNPCQueues[prefabPath] = new Queue<NPCData>();
+                npcDataQueues[prefabPath] = new Queue<NPCData>();
             }
-            floorNPCQueues[prefabPath].Enqueue(pair.Value);
+            npcDataQueues[prefabPath].Enqueue(pair.Value);
+        }
+        Dictionary<string, Queue<TileData>> tileDataQueues = new Dictionary<string, Queue<TileData>>();
+        foreach (KeyValuePair<ATile, TileData> pair in tileDatas)
+        {
+            string prefabPath = pair.Value.prefabPath;
+            if (!tileDataQueues.ContainsKey(prefabPath))
+            {
+                tileDataQueues.Add(prefabPath, new Queue<TileData>());
+            }
+            tileDataQueues[prefabPath].Enqueue(pair.Value);
         }
 
-        saveData.dungeonData.floorDataList[curFloorIndex].npcDataQueues = floorNPCQueues;
+        saveData.dungeonData.floorDataList[curFloorIndex].npcDataQueues = npcDataQueues;
+        saveData.dungeonData.floorDataList[curFloorIndex].tileDataQueues = tileDataQueues;
         saveData.dungeonData.floorDataList[curFloorIndex].playerStateInFloor = playerStateInFloor;
     }
 
@@ -297,6 +354,7 @@ public class GameContext
         {
             playerStateInFloor = saveData.dungeonData.floorDataList[curFloorIndex].playerStateInFloor ?? new PlayerStateInFloor();
             npcDatas.Clear();
+            tileDatas.Clear();
 
             Logger.Log($"[GameContext] Loaded existing PlayerStateInFloor for: Floor {curFloorIndex}");
         }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class DungeonFloorText : MonoBehaviour
+public class FloorIndicatorText : MonoBehaviour
 {
     // Start is called before the first frame update
     private TMP_Text floorIndicatorText = null;
@@ -20,6 +20,6 @@ public class DungeonFloorText : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        this.floorIndicatorText?.SetText($"{dungeonData.playerStateInDungeon.curFloorIndex}");
+        this.floorIndicatorText?.SetText($"Floor : {dungeonData.playerStateInDungeon.curFloorIndex}");
     }
 }

@@ -12,6 +12,7 @@ public class DungeonData
 public class FloorData
 {
     public Dictionary<string, Queue<NPCData>> npcDataQueues = new Dictionary<string, Queue<NPCData>>();
+    public Dictionary<string, Queue<TileData>> tileDataQueues = new Dictionary<string, Queue<TileData>>();
     public PlayerStateInFloor playerStateInFloor = new PlayerStateInFloor();
 }
 
